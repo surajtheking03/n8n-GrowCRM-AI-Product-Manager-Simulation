@@ -1,0 +1,197 @@
+{
+  "name": "GrowCRM – M3: Development Lifecycle & Feedback Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "development lifecycle",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1072,
+        -48
+      ],
+      "id": "a86fdb86-b932-48ea-a344-c1c6f7059f8a",
+      "name": "Webhook",
+      "webhookId": "89fabe43-650a-4839-9be1-19c0123c4b5f"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = items[0].json.body || {};\n\nconst jira_key = body.jira_key || \"\";\nconst feedback_status = body.feedback_status || \"\";\nconst feedback_notes = body.feedback_notes || \"\";\n\nconst transitionMap = {\n  \"selected_for_development\": 21,\n  \"in_development\":           51,\n  \"testing\":                  61,\n  \"client_review\":            71,\n  \"delivered\":                81,\n  \"done\":                     41\n};\n\nconst transitionId = transitionMap[feedback_status];\n\nif (!transitionId) {\n  throw new Error(\"Invalid feedback_status: \" + feedback_status);\n}\n\nreturn [{\n  json: {\n    jira_key,\n    feedback_status,\n    feedback_notes,\n    transitionId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        -64
+      ],
+      "id": "7be74b05-1204-4f1d-9ace-c0b148ba1992",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "922760ae-84d8-41b0-95fc-910c73396966",
+              "leftValue": "={{$json.body.jira_key}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "afb37447-7c9f-4f17-b6e0-e6b8ffcb3d00",
+              "leftValue": "={{$json.body.feedback_status}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -864,
+        -48
+      ],
+      "id": "c5ff5133-f3ed-4193-9898-b1d0b2e44f60",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://surajtheking03.atlassian.net/rest/api/3/issue/{{$json.jira_key}}/transitions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "jiraSoftwareCloudApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"transition\": {\n    \"id\": {{$json.transitionId}}\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -272,
+        -64
+      ],
+      "id": "71c241f5-6864-43c4-ba03-c1553681e956",
+      "name": "Jira HTTP",
+      "alwaysOutputData": false,
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "JIRACREDS",
+          "name": "GrowCRM API Jira"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK9TW83T2",
+          "mode": "id"
+        },
+        "text": "=✅ *{{$node[\"Code in JavaScript\"].json[\"jira_key\"]}}* has been moved to *{{$node[\"Code in JavaScript\"].json[\"feedback_status\"]}}*\n📝 Notes: {{$node[\"Code in JavaScript\"].json[\"feedback_notes\"]}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -64,
+        -64
+      ],
+      "id": "8474aa0b-c78c-42dc-8d80-33123d73f01d",
+      "name": "Send a message",
+      "webhookId": "e62e59e7-8276-4729-a703-7f99295a163a",
+      "credentials": {
+        "slackApi": {
+          "id": "SLACKCREDS",
+          "name": "Slack Cred for GrowCRM N8N"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Jira HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Jira HTTP": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0067bd5b-0b38-4224-82f9-60d4bf1d8604",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
+  },
+  "id": "URmr71yRKCwV3S3A",
+  "tags": [
+    {
+      "updatedAt": "2026-03-01T19:27:47.460Z",
+      "createdAt": "2026-03-01T19:27:47.460Z",
+      "id": "LAcjvaq9ZoOhLEsC",
+      "name": "project_level"
+    }
+  ]
+}
