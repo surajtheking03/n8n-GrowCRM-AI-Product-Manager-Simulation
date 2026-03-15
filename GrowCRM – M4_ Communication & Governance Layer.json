@@ -1,0 +1,680 @@
+{
+  "name": "GrowCRM – M4: Communication & Governance Layer",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "governance-event",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1312,
+        0
+      ],
+      "id": "10ed9b41-0ac2-49a8-bb35-c442a23ee34d",
+      "name": "Webhook",
+      "webhookId": "38c753e5-3e03-493f-9c70-c1f30a11396a"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "fed22007-cce6-426c-bf5a-203773b14e6f",
+              "leftValue": "=={{ $json.body.jira_key || $json.jira_key }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "4e1c51b4-223b-4566-9214-1e88078f10f2",
+              "leftValue": "=={{ $json.body.status || $json.status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1088,
+        -16
+      ],
+      "id": "0d0abcc3-a9b2-4fee-83fc-47ea4ee832d7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = items[0].json.body || items[0].json || {};\n\nreturn [{\n  json: {\n    jira_key:     body.jira_key     || \"\",\n    status:       body.status       || \"\",\n    notes:        body.notes        || \"\",\n    client_name:  body.client_name  || \"Valued Client\",\n    project_name: body.project_name || \"GrowCRM Project\",\n    timestamp:    new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -928,
+        -160
+      ],
+      "id": "a8eb8003-04fa-45f0-9909-7fcb210af69a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.status}}",
+                    "rightValue": "testing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b4b65034-8115-4100-b2f5-2423aee625f6"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "af85aae3-97a9-437e-afff-8110b821175d",
+                    "leftValue": "={{$json.status}}",
+                    "rightValue": "client_review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "55b57c6a-814c-4b68-ad58-2fa2231a7c2f",
+                    "leftValue": "={{$json.status}}",
+                    "rightValue": "delivered",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "334c4b18-256b-41d6-a079-590305041ecf",
+                    "leftValue": "={{$json.status}}",
+                    "rightValue": "done",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        -64
+      ],
+      "id": "44da7482-9ab6-4e69-8e8c-ba817360f3ec",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK9TW83T2",
+          "mode": "id"
+        },
+        "text": "=🚀 *PRODUCT DELIVERED!* *Ticket:* {{$json.jira_key}} *Project:* {{$json.project_name}} *Client:* {{$json.client_name}} *Notes:* {{$json.notes}} ✅ Delivery confirmed!",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -160,
+        64
+      ],
+      "id": "ed6e5156-6b87-4cd2-831f-20357ef04cec",
+      "name": "Delivered Branch",
+      "webhookId": "c83257f4-5cbf-4cc1-b6b9-dfd1d52274c5",
+      "credentials": {
+        "slackApi": {
+          "id": "PTHcJcTxEMRoF5CV",
+          "name": "Slack Cred for GrowCRM N8N"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK9TW83T2",
+          "mode": "id"
+        },
+        "text": "=👀 *CLIENT REVIEW STAGE* *Ticket:* {{$json.jira_key}} *Project:* {{$json.project_name}} *Client:* {{$json.client_name}} *Notes:* {{$json.notes}} ⏳ Awaiting client feedback..",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -224,
+        -128
+      ],
+      "id": "fb9e0a3d-403d-41e9-921b-9f4165ff2d69",
+      "name": "Client Review Branch",
+      "webhookId": "9434883e-854e-4013-9653-6cc5ca8599a2",
+      "credentials": {
+        "slackApi": {
+          "id": "PTHcJcTxEMRoF5CV",
+          "name": "Slack Cred for GrowCRM N8N"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK9TW83T2",
+          "mode": "id"
+        },
+        "text": "=🔬 *QA TESTING STARTED* *Ticket:* {{$json.jira_key}} *Project:* {{$json.project_name}} *Notes:* {{$json.notes}} *Time:* {{$json.timestamp}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -224,
+        -320
+      ],
+      "id": "463b38a5-4a36-4eba-a7ff-da7f5516d85d",
+      "name": "Testing Branch",
+      "webhookId": "8d7b0e7a-bef5-43ec-975d-0773f563340e",
+      "credentials": {
+        "slackApi": {
+          "id": "PTHcJcTxEMRoF5CV",
+          "name": "Slack Cred for GrowCRM N8N"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK9TW83T2",
+          "mode": "id"
+        },
+        "text": "=🏁 *PROJECT COMPLETE!* *Ticket:* {{$json.jira_key}} *Project:* {{$json.project_name}} *Client:* {{$json.client_name}} *Notes:* {{$json.notes}} *Completed At:* {{$json.timestamp}} 🎉 GrowCRM lifecycle complete!",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        -208,
+        256
+      ],
+      "id": "4e642231-79d6-4894-83d5-868c93c247fd",
+      "name": "Done Branch",
+      "webhookId": "5998ec4e-a8f0-4d18-afe4-53b83e9477f0",
+      "credentials": {
+        "slackApi": {
+          "id": "PTHcJcTxEMRoF5CV",
+          "name": "Slack Cred for GrowCRM N8N"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "surajtheking03@gmail.com",
+        "subject": "=={{$node[\"Code in JavaScript\"].json.project_name}} — Ready for Your Review!",
+        "emailType": "text",
+        "message": "=Dear {{$node[\"Code in JavaScript\"].json.client_name}},\n\nYour project {{$node[\"Code in JavaScript\"].json.project_name}} is now ready for review.\n\nTicket Reference: {{$node[\"Code in JavaScript\"].json.jira_key}}\nStage: Client Review\n\nPlease share your feedback at your earliest convenience.\n\nBest regards,\nGrowCRM AI Product Manager",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        -224
+      ],
+      "id": "8572ba94-2608-4697-9b50-5e6f42d0887c",
+      "name": "Client Review Mail",
+      "webhookId": "67b13497-50f4-418d-b498-759c583743e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rQWEAJYuMwrl3Zsc",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "surajtheking03@gmail.com",
+        "subject": "=={{$node[\"Code in JavaScript\"].json.project_name}} — Successfully Delivered!",
+        "emailType": "text",
+        "message": "=Dear {{$node[\"Code in JavaScript\"].json.client_name}},\n\nWe are pleased to inform you that {{$node[\"Code in JavaScript\"].json.project_name}} has been successfully delivered!\n\nTicket Reference: {{$node[\"Code in JavaScript\"].json.jira_key}}\nStage: Delivered\n\nThank you for choosing GrowCRM.\n\nBest regards,\nGrowCRM AI Product Manager",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        0
+      ],
+      "id": "6497561a-a02a-46dd-8894-218ecfc07584",
+      "name": "Delivered Branch Mail",
+      "webhookId": "67b13497-50f4-418d-b498-759c583743e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rQWEAJYuMwrl3Zsc",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "surajtheking03@gmail.com",
+        "subject": "=={{$node[\"Code in JavaScript\"].json.project_name}} — Project Complete! 🎉",
+        "emailType": "text",
+        "message": "=Dear {{$node[\"Code in JavaScript\"].json.client_name}},\n\nYour project {{$node[\"Code in JavaScript\"].json.project_name}} has been successfully completed and signed off!\n\nTicket Reference: {{$node[\"Code in JavaScript\"].json.jira_key}}\nFinal Status: Done\n\nIt has been a pleasure working with you.\n\nBest regards,\nGrowCRM AI Product Manager",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        64,
+        256
+      ],
+      "id": "562666bd-4340-4bb9-9e80-0cfce9b35139",
+      "name": "Done Branch Mail",
+      "webhookId": "67b13497-50f4-418d-b498-759c583743e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "rQWEAJYuMwrl3Zsc",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"={{ $node['Code in JavaScript'].json['status'] }}\",\n  \"jira_key\": \"={{ $node['Code in JavaScript'].json['jira_key'] }}\",\n  \"client_name\": \"={{ $node['Code in JavaScript'].json['client_name'] }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        768,
+        16
+      ],
+      "id": "2b9569f2-bdb5-43f2-be66-022847db8a34",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        -160
+      ],
+      "id": "07e1979b-a7b6-43e3-a096-11f2e725c913",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1865976218,
+          "mode": "list",
+          "cachedResultName": "governance_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=1865976218"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "jira_key": "={{$node[\"Code in JavaScript\"].json.jira_key}}",
+            "status": "={{$node[\"Code in JavaScript\"].json.status}}",
+            "client_name": "={{$node[\"Code in JavaScript\"].json.client_name}}",
+            "project_name": "={{$node[\"Code in JavaScript\"].json.project_name}}",
+            "notes": "={{$node[\"Code in JavaScript\"].json.notes}}",
+            "timestamp": "={{$node[\"Code in JavaScript\"].json.timestamp}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "jira_key",
+              "displayName": "jira_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "client_name",
+              "displayName": "client_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_name",
+              "displayName": "project_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "notes",
+              "displayName": "notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -720,
+        -160
+      ],
+      "id": "d0043555-fb3a-44da-8f21-2ac3d6f4a7fe",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Testing Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Client Review Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delivered Branch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Done Branch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Client Review Branch": {
+      "main": [
+        [
+          {
+            "node": "Client Review Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delivered Branch": {
+      "main": [
+        [
+          {
+            "node": "Delivered Branch Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Done Branch": {
+      "main": [
+        [
+          {
+            "node": "Done Branch Mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Done Branch Mail": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Testing Branch": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Client Review Mail": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delivered Branch Mail": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ea98ae06-e1d9-44a7-b6aa-eef80dab4a0b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
+  },
+  "id": "qFKozyCjmtm6mtjv",
+  "tags": [
+    {
+      "updatedAt": "2026-03-01T19:27:47.460Z",
+      "createdAt": "2026-03-01T19:27:47.460Z",
+      "id": "LAcjvaq9ZoOhLEsC",
+      "name": "project_level"
+    }
+  ]
+}
