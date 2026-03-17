@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -496,
+        -752,
         -64
       ],
       "id": "d76492ea-6468-43c9-afa6-006355206c13",
@@ -27,8 +27,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        848,
-        -64
+        1552,
+        -16
       ],
       "id": "fdbfbf43-3e42-4454-9ec5-0c4ef8316797",
       "name": "Respond to Webhook"
@@ -57,8 +57,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        -288,
-        -64
+        -144,
+        -48
       ],
       "id": "8f9a83f4-4310-4e72-ae9f-1ce9b1a661d3",
       "name": "Call 'GrowCRM – M1: Intake & Requirement Orchestrator'"
@@ -87,7 +87,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        -80,
+        176,
         -64
       ],
       "id": "3f2f8817-20b8-4e13-b251-a8a7e9756edb",
@@ -117,7 +117,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        336,
+        656,
         -64
       ],
       "id": "e87deeb5-31e0-4567-8d07-bebdc9078dd6",
@@ -164,7 +164,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        128,
+        464,
         -64
       ],
       "id": "38ba2bd2-952c-4033-b837-1836c321005a",
@@ -194,11 +194,711 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        544,
+        1168,
         -64
       ],
       "id": "3d2eb379-7652-427f-a527-a0bbf15e7722",
       "name": "Call 'GrowCRM – M4: Communication & Governance Layer'"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "pipeline_started",
+            "project_id": "pending"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -608,
+        -256
+      ],
+      "id": "6ea30025-5610-4a7d-9376-3c2cc8f105be",
+      "name": "Log: pipeline_started",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "m1_completed",
+            "project_id": "={{ $('Call \\'GrowCRM – M1: Intake & Requirement Orchestrator\\'').first().json.project_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        16,
+        -224
+      ],
+      "id": "3e7dcd96-7753-4f29-9c47-bbdb3b126f8a",
+      "name": "m1_completed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "m2_completed",
+            "project_id": "={{ $('Call \\'GrowCRM – M1: Intake & Requirement Orchestrator\\'').first().json.project_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        -240
+      ],
+      "id": "d94b7d65-c1d6-4e28-9ff0-459a82c4163c",
+      "name": "m2_completed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "m3_completed",
+            "project_id": "={{ $('Call \\'GrowCRM – M1: Intake & Requirement Orchestrator\\'').first().json.project_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        -224
+      ],
+      "id": "e791a556-c9bd-40cf-a4f4-d0f3308f4466",
+      "name": "m3_completed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "m4_completed",
+            "project_id": "={{ $('Call \\'GrowCRM – M1: Intake & Requirement Orchestrator\\'').first().json.project_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1280,
+        -352
+      ],
+      "id": "0d1b1e58-62bf-45a4-9bbc-1a3bb4cdf412",
+      "name": "m4_completed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit?gid=284172154#gid=284172154",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 284172154,
+          "mode": "list",
+          "cachedResultName": "execution_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1BOCaRFVgroEllkXSI46ELDfJcNwQzcRxkhaI6ZtxpqM/edit#gid=284172154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "execution_id": "={{ $execution.id }}",
+            "status": "success",
+            "timestamp": "={{ new Date().toISOString() }}",
+            "stage": "pipeline_finished",
+            "project_id": "={{ $('Call \\'GrowCRM – M1: Intake & Requirement Orchestrator\\'').first().json.project_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "execution_id",
+              "displayName": "execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "project_id",
+              "displayName": "project_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "stage",
+              "displayName": "stage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "error",
+              "displayName": "error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1520,
+        -256
+      ],
+      "id": "b494f716-ac99-4b6b-ac29-a345b5068aa6",
+      "name": "pipeline_finished",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "AokrfI6dR46J5f26",
+          "name": "GrowCRM Project"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "87ce19b0-5797-4ae2-b0ba-4e3220ccddad",
+              "name": "=client_name",
+              "value": "={{ $('Webhook').first().json.body.client_name }}",
+              "type": "string"
+            },
+            {
+              "id": "7f8718c6-c7ec-474e-b944-c641bd991615",
+              "name": "=category",
+              "value": "={{ $('Webhook').first().json.body.category }}",
+              "type": "string"
+            },
+            {
+              "id": "cb0c6a84-777e-49ea-88ed-1c89171b3611",
+              "name": "=raw_requirement_text",
+              "value": "={{ $('Webhook').first().json.body.raw_requirement_text }}",
+              "type": "string"
+            },
+            {
+              "id": "a7d9dba5-416c-4f1a-b67c-cedc06b04af4",
+              "name": "=budget_range",
+              "value": "={{ $('Webhook').first().json.body.budget_range }}",
+              "type": "string"
+            },
+            {
+              "id": "83e72765-286f-44b7-8cbe-2b2321c6076c",
+              "name": "=deadline_preference",
+              "value": "={{ $('Webhook').first().json.body.deadline_preference }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -400,
+        -256
+      ],
+      "id": "1a48cb09-941a-4022-bf09-6300f7665cb2",
+      "name": "Set: Restore Webhook Data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4d9956a4-4b9c-47b1-87b7-9977e56bac44",
+              "name": "=jira_key",
+              "value": "={{ $('Edit Fields').first().json.jira_key }}",
+              "type": "string"
+            },
+            {
+              "id": "84321186-d3b1-4683-acf3-485a6f84473b",
+              "name": "=status",
+              "value": "={{ $('Edit Fields').first().json.status }}",
+              "type": "string"
+            },
+            {
+              "id": "31595a0f-300b-41a5-8dba-8193b24827cc",
+              "name": "=feedback_status",
+              "value": "={{ $('Edit Fields').first().json.feedback_status }}",
+              "type": "string"
+            },
+            {
+              "id": "179088f4-4c68-42a1-91fa-96baca84fc18",
+              "name": "=feedback_notes",
+              "value": "={{ $('Edit Fields').first().json.feedback_notes }}",
+              "type": "string"
+            },
+            {
+              "id": "a404bcf5-4b6d-4194-9c9e-e55b94210d21",
+              "name": "=client_name",
+              "value": "={{ $('Edit Fields').first().json.client_name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1008,
+        -224
+      ],
+      "id": "8b46ef8c-5871-431e-8116-c83c54265ca1",
+      "name": "Restore M4 Payload"
     }
   ],
   "pinData": {},
@@ -207,7 +907,7 @@
       "main": [
         [
           {
-            "node": "Call 'GrowCRM – M1: Intake & Requirement Orchestrator'",
+            "node": "Log: pipeline_started",
             "type": "main",
             "index": 0
           }
@@ -218,7 +918,7 @@
       "main": [
         [
           {
-            "node": "Call 'GrowCRM – M2: Evaluation & Scoring Engine'",
+            "node": "m1_completed",
             "type": "main",
             "index": 0
           }
@@ -229,7 +929,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "m2_completed",
             "type": "main",
             "index": 0
           }
@@ -240,7 +940,7 @@
       "main": [
         [
           {
-            "node": "Call 'GrowCRM – M4: Communication & Governance Layer'",
+            "node": "m3_completed",
             "type": "main",
             "index": 0
           }
@@ -262,7 +962,95 @@
       "main": [
         [
           {
+            "node": "m4_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log: pipeline_started": {
+      "main": [
+        [
+          {
+            "node": "Set: Restore Webhook Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "m1_completed": {
+      "main": [
+        [
+          {
+            "node": "Call 'GrowCRM – M2: Evaluation & Scoring Engine'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "m2_completed": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "m3_completed": {
+      "main": [
+        [
+          {
+            "node": "Restore M4 Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "m4_completed": {
+      "main": [
+        [
+          {
+            "node": "pipeline_finished",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pipeline_finished": {
+      "main": [
+        [
+          {
             "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Restore Webhook Data": {
+      "main": [
+        [
+          {
+            "node": "Call 'GrowCRM – M1: Intake & Requirement Orchestrator'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Restore M4 Payload": {
+      "main": [
+        [
+          {
+            "node": "Call 'GrowCRM – M4: Communication & Governance Layer'",
             "type": "main",
             "index": 0
           }
@@ -274,8 +1062,9 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a6bffb37-f7c9-4f13-bde6-626194e16f17",
+  "versionId": "e6787745-e6e7-481e-bd83-6a2a85058dc0",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
   },
   "id": "vv1X9MtEEUVUjSYw",
