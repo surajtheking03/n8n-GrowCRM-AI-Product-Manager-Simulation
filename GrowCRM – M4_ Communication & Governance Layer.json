@@ -169,6 +169,29 @@
                 ],
                 "combinator": "and"
               }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a5ad3c4d-58cd-48ec-8959-01e75f1f2fc4",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "=selected_for_development",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             }
           ]
         },
@@ -177,8 +200,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.4,
       "position": [
-        -544,
-        -64
+        -560,
+        -32
       ],
       "id": "44da7482-9ab6-4e69-8e8c-ba817360f3ec",
       "name": "Switch"
@@ -198,7 +221,7 @@
       "typeVersion": 2.4,
       "position": [
         -160,
-        64
+        48
       ],
       "id": "ed6e5156-6b87-4cd2-831f-20357ef04cec",
       "name": "Delivered Branch",
@@ -303,7 +326,7 @@
       "typeVersion": 2.2,
       "position": [
         64,
-        -224
+        -192
       ],
       "id": "8572ba94-2608-4697-9b50-5e6f42d0887c",
       "name": "Client Review Mail",
@@ -490,6 +513,35 @@
           "name": "GrowCRM Project"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1137bb45-18fa-4d10-9b8f-866ce809c7e1",
+              "name": "=status",
+              "value": "=completed",
+              "type": "string"
+            },
+            {
+              "id": "b7fbec80-8b91-46f9-853f-5dff50427fe5",
+              "name": "=stage",
+              "value": "=m4_completed",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        -16
+      ],
+      "id": "87353827-f5d8-4a0d-ae59-7d56e21db227",
+      "name": "Return Output"
     }
   ],
   "pinData": {},
@@ -556,6 +608,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Return Output",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -596,7 +655,7 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Return Output",
             "type": "main",
             "index": 0
           }
@@ -607,7 +666,7 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Return Output",
             "type": "main",
             "index": 0
           }
@@ -618,7 +677,7 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Return Output",
             "type": "main",
             "index": 0
           }
@@ -629,7 +688,7 @@
       "main": [
         [
           {
-            "node": "Respond to Webhook",
+            "node": "Return Output",
             "type": "main",
             "index": 0
           }
@@ -657,13 +716,24 @@
           }
         ]
       ]
+    },
+    "Return Output": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "ea98ae06-e1d9-44a7-b6aa-eef80dab4a0b",
+  "versionId": "2f2b2ee0-ff36-41a1-8f8d-ed701559329d",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
