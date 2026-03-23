@@ -34,10 +34,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://127.0.0.1:11434/api/generate",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"gemma3:4b\",\n  \"prompt\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\",\n  \"stream\": false\n}",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\"\n    }\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -48,11 +50,17 @@
       ],
       "id": "bcd89ad1-5ab6-46ff-8f4c-da4931d507cd",
       "name": "HTTP Request",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "groqApi": {
+          "id": "p1MYurFBN9O850eJ",
+          "name": "Groq account"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const ollamaResponse = items[0].json.response;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
+        "jsCode": "const responseText = $json.choices[0].message.content;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = responseText;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -728,7 +736,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "2089fea6-147b-4c56-b666-c63d26cc33a3",
+  "versionId": "236407ed-7865-43de-95ae-003eac573202",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
