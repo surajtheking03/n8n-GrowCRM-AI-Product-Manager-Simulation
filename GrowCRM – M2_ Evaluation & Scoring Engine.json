@@ -78,10 +78,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://127.0.0.1:11434/api/generate",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"gemma3:4b\",\n  \"prompt\": \"You are a product governance analyst.\\n\\nTwo product concepts were tested with simulated survey users.\\n\\nVariant A:\\n{{$input.item(0).json.product_concept}}\\n\\nVariant B:\\n{{$input.item(1).json.product_concept}}\\n\\nSimulate a survey outcome between the two concepts.\\n\\nReturn JSON only:\\n{\\n\\\"variant_A_percent\\\": number,\\n\\\"variant_B_percent\\\": number,\\n\\\"confidence_score\\\": number,\\n\\\"recommended_variant\\\": \\\"A or B\\\",\\n\\\"reason\\\": \\\"short explanation\\\"\\n}\",\n  \"stream\": false\n}",
+        "jsonBody": "={\"model\":\"llama-3.3-70b-versatile\",\"messages\":[{\"role\":\"user\",\"content\":\"Compare Variant A: {{ $input.all()[0].json.description }} VS Variant B: {{ $input.all()[1].json.description }} Return ONLY JSON: {\\\"variant_A_percent\\\":60,\\\"variant_B_percent\\\":40,\\\"confidence_score\\\":85,\\\"recommended_variant\\\":\\\"A\\\",\\\"reason\\\":\\\"brief reason\\\"}\"}]}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -91,11 +93,17 @@
         -16
       ],
       "id": "e8a25afd-0153-40c5-ba80-14a7422e5aa2",
-      "name": "Evaluation LLM"
+      "name": "Evaluation LLM",
+      "credentials": {
+        "groqApi": {
+          "id": "p1MYurFBN9O850eJ",
+          "name": "Groq account"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const responseText = $json.response;\n\n// remove markdown fences if present\nconst cleaned = responseText\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst parsed = JSON.parse(cleaned);\n\nreturn [\n  {\n    json: parsed\n  }\n];"
+        "jsCode": "const responseText = $json.choices[0].message.content;\n\nconst cleaned = responseText\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst start = cleaned.indexOf('{');\nconst end = cleaned.lastIndexOf('}');\nconst jsonOnly = cleaned.substring(start, end + 1);\n\nconst parsed = JSON.parse(jsonOnly);\n\nreturn [\n  {\n    json: parsed\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -142,10 +150,12 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://127.0.0.1:11434/api/generate",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"gemma3:4b\",\n  \"prompt\": \"You are an AI Product Manager.\\n\\nGiven the following client requirement:\\n\\nClient: {{$json.client_name}}\\nRequirement: {{$json.raw_requirement_text}}\\n\\nGenerate Product Variant A.\\n\\nReturn JSON only:\\n{\\n\\\"variant\\\": \\\"A\\\",\\n\\\"product_concept\\\": \\\"...\\\",\\n\\\"key_features\\\": [\\\"...\\\"],\\n\\\"target_users\\\": \\\"...\\\",\\n\\\"unique_value\\\": \\\"...\\\"\\n}\",\n  \"stream\": false\n}",
+        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\"\n    }\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -156,15 +166,23 @@
       ],
       "id": "b38537bd-1802-4497-ad6b-217255def774",
       "name": "LLM Gemma",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "groqApi": {
+          "id": "p1MYurFBN9O850eJ",
+          "name": "Groq account"
+        }
+      }
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "http://127.0.0.1:11434/api/generate",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"llama3.2\",\n  \"prompt\": \"You are an AI Product Manager.\\n\\nGiven the following client requirement:\\n\\nClient: {{$json.client_name}}\\nRequirement: {{$json.raw_requirement_text}}\\n\\nGenerate Product Variant B.\\n\\nReturn JSON only:\\n{\\n\\\"variant\\\": \\\"B\\\",\\n\\\"product_concept\\\": \\\"...\\\",\\n\\\"key_features\\\": [\\\"...\\\"],\\n\\\"target_users\\\": \\\"...\\\",\\n\\\"unique_value\\\": \\\"...\\\"\\n}\",\n  \"stream\": false\n}",
+        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\"\n    }\n  ]\n}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -175,11 +193,17 @@
       ],
       "id": "7b8e1d55-7ba0-47c4-ac0e-965052c8f25b",
       "name": "LLM Llama",
-      "alwaysOutputData": true
+      "alwaysOutputData": true,
+      "credentials": {
+        "groqApi": {
+          "id": "p1MYurFBN9O850eJ",
+          "name": "Groq account"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "const ollamaResponse = items[0].json.response;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
+        "jsCode": "const ollamaResponse = items[0].json.choices[0].message.content;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -192,7 +216,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const ollamaResponse = items[0].json.response;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
+        "jsCode": "const ollamaResponse = items[0].json.choices[0].message.content;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -392,7 +416,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "bac29fa7-0feb-4a2a-98fa-f75cb7355d8b",
+  "versionId": "047e382e-f84a-4bf2-b02f-22538a682b4b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
