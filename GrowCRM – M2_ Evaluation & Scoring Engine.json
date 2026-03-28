@@ -10,27 +10,23 @@
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
-      "position": [
-        -1072,
-        -48
-      ],
-      "id": "6d4cccec-b509-4e39-9252-d9d7028f3c56",
+      "position": [-784,176],
+      "id": "a69e1f67-0df2-4913-944a-08c203e1eb89",
       "name": "Webhook",
       "webhookId": "aab36af9-5a8c-4f6a-a254-8a88fad947d1"
     },
+
     {
       "parameters": {
-        "jsCode": "// Try both body locations - handles both raw and parsed webhook data\nconst body = items[0].json.body || items[0].json || {};\n\n// Extract all fields with fallbacks\nconst client_name = body.client_name || \"Unknown Client\";\nconst category = body.category || \"CRM\";\nconst raw_requirement_text = body.raw_requirement_text || \"\";\nconst budget_range = body.budget_range || \"Not specified\";\nconst deadline_preference = body.deadline_preference || \"Not specified\";\n\n// Build structured prompt — client_name is BAKED INTO the expected JSON response\n// so Ollama will return it back to us and we won't lose it!\nconst prompt = `\nYou are an AI Product Manager.\n\nGenerate a structured product brief for the following client request:\n\nClient Name: ${client_name}\nCategory: ${category}\nRequirements: ${raw_requirement_text}\nBudget: ${budget_range}\nTimeline: ${deadline_preference}\n\nReturn ONLY valid JSON in this exact format with NO extra text:\n\n{\n  \"client_name\": \"${client_name}\",\n  \"category\": \"string\",\n  \"features\": [\"string\"],\n  \"sub_features\": [\"string\"],\n  \"description\": \"string\"\n}\n`;\n\nreturn [{\n  json: {\n    client_name,\n    category,\n    raw_requirement_text,\n    budget_range,\n    deadline_preference,\n    prompt\n  }\n}];"
+        "jsCode": "// Try both body locations - handles both raw and parsed webhook data\nconst body = items[0].json.body || items[0].json || {};\nconst client_name = body.client_name || \"Unknown Client\";\nconst category = body.category || \"CRM\";\nconst raw_requirement_text = body.raw_requirement_text || \"\";\nconst budget_range = body.budget_range || \"Not specified\";\nconst deadline_preference = body.deadline_preference || \"Not specified\";\n\nconst prompt = `\nYou are an AI Product Manager.\n\nGenerate a structured product brief for the following client request:\n\nClient Name: ${client_name}\nCategory: ${category}\nRequirements: ${raw_requirement_text}\nBudget: ${budget_range}\nTimeline: ${deadline_preference}\n\nReturn ONLY valid JSON in this exact format with NO extra text:\n\n{\n  \"client_name\": \"${client_name}\",\n  \"category\": \"string\",\n  \"features\": [\"string\"],\n  \"sub_features\": [\"string\"],\n  \"description\": \"string\"\n}\n`;\n\nreturn [{ json: { client_name, category, raw_requirement_text, budget_range, deadline_preference, prompt } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [
-        -528,
-        -64
-      ],
-      "id": "1e8f9b04-6c37-401d-85db-66c910e164f5",
+      "position": [-240,160],
+      "id": "5d1e9e08-9dc4-491b-be81-589c4e6443bf",
       "name": "Code in JavaScript"
     },
+
     {
       "parameters": {
         "conditions": {
@@ -45,389 +41,181 @@
               "id": "922760ae-84d8-41b0-95fc-910c73396966",
               "leftValue": "=={{ $json.body.client_name || $json.client_name }}",
               "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
+              "operator": { "type": "string", "operation": "notEmpty" }
             },
             {
               "id": "afb37447-7c9f-4f17-b6e0-e6b8ffcb3d00",
               "leftValue": "=={{ $json.body.raw_requirement_text || $json.raw_requirement_text }}",
               "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
+              "operator": { "type": "string", "operation": "notEmpty" }
             }
           ],
           "combinator": "and"
-        },
-        "options": {}
+        }
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
-      "position": [
-        -864,
-        -48
-      ],
-      "id": "24ec0229-5ef8-4436-8b53-c7977b19e20d",
+      "position": [-576,176],
+      "id": "507afbdc-022a-4ff4-9fba-fc40ec92a7ab",
       "name": "If1"
     },
+
     {
       "parameters": {
         "method": "POST",
-        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "url": "GROQ_API_URL",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "groqApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\"model\":\"llama-3.3-70b-versatile\",\"messages\":[{\"role\":\"user\",\"content\":\"Compare Variant A: {{ $input.all()[0].json.description }} VS Variant B: {{ $input.all()[1].json.description }} Return ONLY JSON: {\\\"variant_A_percent\\\":60,\\\"variant_B_percent\\\":40,\\\"confidence_score\\\":85,\\\"recommended_variant\\\":\\\"A\\\",\\\"reason\\\":\\\"brief reason\\\"}\"}]}",
-        "options": {}
+        "jsonBody": "={\"model\":\"llama-3.3-70b-versatile\",\"messages\":[{\"role\":\"user\",\"content\":\"Compare Variant A: {{ $input.all()[0].json.description }} VS Variant B: {{ $input.all()[1].json.description }} Return ONLY JSON: {\\\"variant_A_percent\\\":60,\\\"variant_B_percent\\\":40,\\\"confidence_score\\\":85,\\\"recommended_variant\\\":\\\"A\\\",\\\"reason\\\":\\\"brief reason\\\"}\"}]}"
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
-      "position": [
-        480,
-        -16
-      ],
-      "id": "e8a25afd-0153-40c5-ba80-14a7422e5aa2",
+      "position": [768,208],
+      "id": "2a6c9c82-c6cc-46c8-b71c-ec20943b5be2",
       "name": "Evaluation LLM",
       "credentials": {
         "groqApi": {
-          "id": "p1MYurFBN9O850eJ",
+          "id": "REPLACE_GROQ_CREDENTIAL",
           "name": "Groq account"
         }
       }
     },
+
     {
       "parameters": {
-        "jsCode": "const responseText = $json.choices[0].message.content;\n\nconst cleaned = responseText\n  .replace(/```json/g, '')\n  .replace(/```/g, '')\n  .trim();\n\nconst start = cleaned.indexOf('{');\nconst end = cleaned.lastIndexOf('}');\nconst jsonOnly = cleaned.substring(start, end + 1);\n\nconst parsed = JSON.parse(jsonOnly);\n\nreturn [\n  {\n    json: parsed\n  }\n];"
+        "jsCode": "const responseText = $json.choices[0].message.content;\nconst cleaned = responseText.replace(/```json/g,'').replace(/```/g,'').trim();\nconst start = cleaned.indexOf('{');\nconst end = cleaned.lastIndexOf('}');\nconst jsonOnly = cleaned.substring(start,end+1);\nconst parsed = JSON.parse(jsonOnly);\nreturn [{json:parsed}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [
-        736,
-        -16
-      ],
-      "id": "6c4eabc2-8bb2-4a06-a622-60a2e5f4d728",
+      "position": [1024,208],
+      "id": "ae9f5abd-6c9b-4be1-9ea7-dc6e1351fb15",
       "name": "Parse Evaluation"
     },
+
     {
       "parameters": {
         "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
           "conditions": [
             {
-              "id": "e808fc10-6005-46d1-94a0-e6e49d9546d2",
               "leftValue": "=={{ $json.recommended_variant }}",
               "rightValue": "=A",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
+              "operator": { "type": "string", "operation": "equals" }
             }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
+          ]
+        }
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
-      "position": [
-        928,
-        -16
-      ],
-      "id": "ec7022d2-a7e2-45b9-b98b-be7bd5bbeab3",
+      "position": [1216,208],
+      "id": "67597dc5-ad8f-4f37-8471-2a52c957bdab",
       "name": "Score Decision"
     },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.groq.com/openai/v1/chat/completions",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "groqApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"llama-3.1-8b-instant\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\"\n    }\n  ]\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        -288,
-        -224
-      ],
-      "id": "b38537bd-1802-4497-ad6b-217255def774",
-      "name": "LLM Gemma",
-      "alwaysOutputData": true,
-      "credentials": {
-        "groqApi": {
-          "id": "p1MYurFBN9O850eJ",
-          "name": "Groq account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.groq.com/openai/v1/chat/completions",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "groqApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"llama-3.3-70b-versatile\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"={{ $json.prompt.replace(/\\n/g, ' ').replace(/\\\"/g, '\\\\\\\"') }}\"\n    }\n  ]\n}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        -304,
-        176
-      ],
-      "id": "7b8e1d55-7ba0-47c4-ac0e-965052c8f25b",
-      "name": "LLM Llama",
-      "alwaysOutputData": true,
-      "credentials": {
-        "groqApi": {
-          "id": "p1MYurFBN9O850eJ",
-          "name": "Groq account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const ollamaResponse = items[0].json.choices[0].message.content;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -32,
-        -192
-      ],
-      "id": "6b786b07-69f5-4ee4-b774-83202aa31907",
-      "name": "Parse A"
-    },
-    {
-      "parameters": {
-        "jsCode": "const ollamaResponse = items[0].json.choices[0].message.content;\nconst client_name = items[0].json.client_name || \"\";\n\nlet jsonStr = ollamaResponse;\njsonStr = jsonStr.replace(/```json\\n?/g, '').replace(/```/g, '').trim();\n\nconst start = jsonStr.indexOf('{');\nconst end = jsonStr.lastIndexOf('}');\nif (start !== -1 && end !== -1) {\n  jsonStr = jsonStr.substring(start, end + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(jsonStr);\n} catch (e) {\n  parsed = {\n    category: \"CRM\",\n    features: [\"Order Tracking\", \"Customer Database\", \"Reporting\"],\n    sub_features: [\"Dashboard\", \"Analytics\", \"Notifications\"],\n    description: \"AI-generated product brief\"\n  };\n}\n\nreturn [{\n  json: {\n    client_name:  parsed.client_name || client_name,\n    category:     parsed.category    || \"CRM\",\n    features:     parsed.features    || [],\n    sub_features: parsed.sub_features || [],\n    description:  parsed.description  || \"\"\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -48,
-        208
-      ],
-      "id": "65f35b9c-eb18-4e34-9d84-dd558bd632e5",
-      "name": "Parse B"
-    },
+
     {
       "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
-      "position": [
-        240,
-        -16
-      ],
-      "id": "43078916-09ab-4ca0-add5-27d58ef8b621",
+      "position": [528,208],
+      "id": "68d373ee-5006-469a-b02a-ca36de4dc427",
       "name": "Merge"
     },
+
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"recommended_variant\": \"={{ $json.recommended_variant }}\",\n  \"confidence_score\": \"={{ $json.confidence_score }}\",\n  \"reason\": \"={{ $json.reason }}\"\n}",
-        "options": {}
+        "responseBody": "={\"recommended_variant\":\"={{ $json.recommended_variant }}\",\"confidence_score\":\"={{ $json.confidence_score }}\",\"reason\":\"={{ $json.reason }}\"}"
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
-      "position": [
-        1248,
-        -32
-      ],
-      "id": "425b1c78-947c-4e60-8941-377cf7ec06e2",
+      "position": [1536,192],
+      "id": "b79dfd53-e649-4acb-9b5d-de2a17b77017",
       "name": "Respond to Webhook"
     },
+
     {
       "parameters": {},
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [
-        -1072,
-        -208
-      ],
-      "id": "56750a99-9e52-4119-8a84-008d3a506696",
+      "position": [-784,16],
+      "id": "0fce8e21-45ff-4a76-ad9e-127fbf951188",
       "name": "When clicking ‘Execute workflow’"
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "GROQ_API_URL",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi",
+        "sendBody": true,
+        "specifyBody": "json"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [0,0],
+      "id": "ff0580f0-2600-4071-89a3-a40ee09e650e",
+      "name": "Groq1",
+      "credentials": {
+        "groqApi": {
+          "id": "REPLACE_GROQ_CREDENTIAL",
+          "name": "Groq account"
+        }
+      }
+    },
+
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "GROQ_API_URL",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "groqApi"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [-16,400],
+      "id": "42e39e54-ff06-4114-a8e7-0c6b35f5ca6f",
+      "name": "Groq2",
+      "credentials": {
+        "groqApi": {
+          "id": "REPLACE_GROQ_CREDENTIAL",
+          "name": "Groq account"
+        }
+      }
     }
   ],
-  "pinData": {},
+
   "connections": {
-    "Webhook": {
-      "main": [
-        [
-          {
-            "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
+    "Webhook": { "main": [[{ "node": "If1","type": "main","index": 0 }]] },
+    "If1": { "main": [[{ "node": "Code in JavaScript","type": "main","index": 0 }]] },
     "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "LLM Gemma",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "LLM Llama",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[
+        { "node": "Groq1","type": "main","index": 0 },
+        { "node": "Groq2","type": "main","index": 0 }
+      ]]
     },
-    "If1": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Evaluation LLM": {
-      "main": [
-        [
-          {
-            "node": "Parse Evaluation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse Evaluation": {
-      "main": [
-        [
-          {
-            "node": "Score Decision",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "LLM Gemma": {
-      "main": [
-        [
-          {
-            "node": "Parse A",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "LLM Llama": {
-      "main": [
-        [
-          {
-            "node": "Parse B",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse A": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse B": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Evaluation LLM",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
+    "Groq1": { "main": [[{ "node": "Parse A","type": "main","index": 0 }]] },
+    "Groq2": { "main": [[{ "node": "Parse B","type": "main","index": 0 }]] },
+    "Parse A": { "main": [[{ "node": "Merge","type": "main","index": 0 }]] },
+    "Parse B": { "main": [[{ "node": "Merge","type": "main","index": 1 }]] },
+    "Merge": { "main": [[{ "node": "Evaluation LLM","type": "main","index": 0 }]] },
+    "Evaluation LLM": { "main": [[{ "node": "Parse Evaluation","type": "main","index": 0 }]] },
+    "Parse Evaluation": { "main": [[{ "node": "Score Decision","type": "main","index": 0 }]] },
     "Score Decision": {
       "main": [
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{ "node": "Respond to Webhook","type": "main","index": 0 }],
+        [{ "node": "Respond to Webhook","type": "main","index": 0 }]
       ]
     },
     "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
+      "main": [[{ "node": "If1","type": "main","index": 0 }]]
     }
   },
+
   "active": true,
   "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "047e382e-f84a-4bf2-b02f-22538a682b4b",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "3294931b033528f6418ce49618c0c9631f972baaa3ff1615e91b9e03c6efd9ff"
-  },
-  "id": "sKthihhe4PPxJ1Tx",
-  "tags": [
-    {
-      "updatedAt": "2026-03-01T19:27:47.460Z",
-      "createdAt": "2026-03-01T19:27:47.460Z",
-      "id": "LAcjvaq9ZoOhLEsC",
-      "name": "project_level"
-    }
-  ]
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  }
 }
