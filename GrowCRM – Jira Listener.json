@@ -1,0 +1,197 @@
+{
+  "name": "GrowCRM – Jira Listener",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "jira-listener",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0,0],
+      "id": "c520df5d-d945-495b-9e55-9fbc4387b92e",
+      "name": "Webhook",
+      "webhookId": "REPLACE_WEBHOOK_ID"
+    },
+
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "REPLACE_SLACK_CHANNEL_ID",
+          "mode": "id"
+        },
+        "text": "=🚀 GrowCRM Jira Movement Detected\n\n🎫 Ticket: {{$json[\"Issue Key\"]}}\n📝 Summary: {{$json[\"Summary\"]}}\n\n🔁 Status Change:\n➡ From: {{$json[\"Previous Status\"]}}\n➡ To: {{$json[\"Current Status\"]}}\n\n👤 Updated By: {{$json[\"Changed By\"]}}\n⚡ Priority: {{$json[\"Priority\"]}}\n👥 Assignee: {{$json[\"Assignee\"]}}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [640,-160],
+      "id": "3775476e-36e5-4805-a0d4-0647f9c84499",
+      "name": "Send a message",
+      "webhookId": "REPLACE_SLACK_WEBHOOK",
+      "credentials": {
+        "slackApi": {
+          "id": "REPLACE_SLACK_CREDENTIAL",
+          "name": "Slack account"
+        }
+      }
+    },
+
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3f03f9f0-b119-4b4a-ae2f-72a0804482a1",
+              "leftValue": "={{$json[\"Current Status\"]}}",
+              "rightValue": "Done",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [848,-16],
+      "id": "ebeb48e8-b435-460a-a6bd-80e0240e703a",
+      "name": "If1"
+    },
+
+    {
+      "parameters": {
+        "sendTo": "REPLACE_EMAIL",
+        "subject": "✅ GrowCRM Task Completed",
+        "emailType": "text",
+        "message": "=Hello there,\n\nA GrowCRM task has been successfully completed.\n\nTicket: {{$json[\"Issue Key\"]}}\nSummary: {{$json[\"Summary\"]}}\n\nFinal Status: {{$json[\"Current Status\"]}}\nCompleted By: {{$json[\"Changed By\"]}}\nCompleted At: {{$json[\"Timestamp\"]}}\n\nThis task has successfully completed the workflow lifecycle.\n\nPowered by GrowCRM Agentic AI  \nAutomated via n8n Workflow\n\nRegards,  \nGrowCRM Automation Bot",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [1296,-176],
+      "id": "67c98090-458f-4ae9-9e85-399ddd071789",
+      "name": "Send a message1",
+      "webhookId": "REPLACE_GMAIL_WEBHOOK",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "REPLACE_GMAIL_CREDENTIAL",
+          "name": "Gmail account"
+        }
+      }
+    },
+
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "REPLACE_GOOGLE_SHEET_URL",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1389597155,
+          "mode": "list",
+          "cachedResultName": "Jira Movement Sheet",
+          "cachedResultUrl": "REPLACE_GOOGLE_SHEET_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now }}",
+            "Issue Key": "={{$json[\"body\"][\"issue\"][\"key\"]}}",
+            "Project Name": "={{$json[\"body\"][\"issue\"][\"fields\"][\"project\"][\"name\"]}}",
+            "Summary": "={{ \"'\" + $json[\"body\"][\"issue\"][\"fields\"][\"summary\"].replace(/^=/, '') }}",
+            "Previous Status": "={{$json[\"body\"][\"changelog\"][\"items\"].find(i => i.field === \"status\")?.fromString || \"N/A\"}}",
+            "Current Status": "={{$json[\"body\"][\"changelog\"][\"items\"][0][\"toString\"]}}",
+            "Changed By": "={{$json[\"body\"][\"user\"][\"displayName\"]}}",
+            "Priority": "={{$json[\"body\"][\"issue\"][\"fields\"][\"priority\"][\"name\"]}}",
+            "Assignee": "={{$json[\"body\"][\"issue\"][\"fields\"][\"assignee\"]?.displayName || \"Unassigned\"}}"
+          },
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [416,0],
+      "id": "3aa9d692-7105-4e71-9a2e-e8ccaf54a58a",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "REPLACE_GOOGLE_CREDENTIAL",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "REPLACE_SLACK_CHANNEL_ID",
+          "mode": "id"
+        },
+        "text": "=🎉 GrowCRM Task Completed\n\n🎫 Ticket: {{$json[\"Issue Key\"]}}\n📝 Summary: {{$json[\"Summary\"]}}\n\n✅ Status: DONE\n👤 Completed By: {{$json[\"Changed By\"]}}\n🕒 Time: {{$json[\"Timestamp\"]}}\n\n🚀 This task has successfully completed the workflow lifecycle  \n⚙️ Powered by GrowCRM Agentic AI",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [1040,-224],
+      "id": "d72b2f42-0f2f-4780-8669-ebc3f96a8cd3",
+      "name": "Send a message2",
+      "webhookId": "REPLACE_SLACK_WEBHOOK",
+      "credentials": {
+        "slackApi": {
+          "id": "REPLACE_SLACK_CREDENTIAL",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+
+  "connections": {
+    "Webhook": {
+      "main": [[{ "node": "Append row in sheet","type": "main","index": 0 }]]
+    },
+    "Append row in sheet": {
+      "main": [[
+        { "node": "Send a message","type": "main","index": 0 },
+        { "node": "If1","type": "main","index": 0 }
+      ]]
+    },
+    "Send a message": {
+      "main": [[{ "node": "If1","type": "main","index": 0 }]]
+    },
+    "If1": {
+      "main": [[
+        { "node": "Send a message2","type": "main","index": 0 },
+        { "node": "Send a message1","type": "main","index": 0 }
+      ]]
+    }
+  },
+
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  }
+}
