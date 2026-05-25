@@ -130,6 +130,8 @@ GrowCRM/
 
 ## 🚀 Note
 
+Check out the whole demo video here: https://www.loom.com/share/17b00155a51742ea89a06eb52882d848
+
 The Jira Listener module is designed as a standalone system and can be used independently for real-time task tracking and notifications.
 
 ---
