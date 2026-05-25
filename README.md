@@ -136,7 +136,7 @@ Check the in-depth video and demonstration: https://www.linkedin.com/posts/suraj
 
 Also check the Jira Listener demonstration: https://www.linkedin.com/posts/suraj-b-89b907a8_buildinpublic-automation-jira-ugcPost-7442863158308032512-y90Y/
 
-As the Railway deployments are only available for viewing for 1 month, I managed to screen record and run this as individual demonstration. I recommend everyone to check all the three videos in case of a demo.
+**As the Railway deployments are only available for viewing for 1 month, I managed to screen record and run this as individual demonstration. For a complete understanding of the system, watching all three videos is recommended.**
 
 The Jira Listener module is designed as a standalone system and can be used independently for real-time task tracking and notifications.
 
