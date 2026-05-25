@@ -130,7 +130,13 @@ GrowCRM/
 
 ## 🚀 Note
 
-Check out the whole demo video here: https://www.loom.com/share/17b00155a51742ea89a06eb52882d848
+Check out the Loom Demo video here: https://www.loom.com/share/17b00155a51742ea89a06eb52882d848
+
+Check the in-depth video and demonstration: https://www.linkedin.com/posts/suraj-b-89b907a8_agenticai-aiworkflows-n8n-ugcPost-7442310362856587264-OJdJ/
+
+Also check the Jira Listener demonstration: https://www.linkedin.com/posts/suraj-b-89b907a8_buildinpublic-automation-jira-ugcPost-7442863158308032512-y90Y/
+
+As the Railway deployments are only available for viewing for 1 month, I managed to screen record and run this as individual demonstration. I recommend everyone to check all the three videos in case of a demo.
 
 The Jira Listener module is designed as a standalone system and can be used independently for real-time task tracking and notifications.
 
